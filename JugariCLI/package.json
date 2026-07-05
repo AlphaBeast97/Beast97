@@ -1,11 +1,14 @@
 {
-  "name": "jugaricli",
+  "name": "@alphabeast97/jugari",
   "version": "1.0.0",
   "description": "Broke but brilliant. A coding agent harness built for free-tier models. (in progress V0.1)",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "node --watch src/index.js"
+  },
+  "bin": {
+    "jugari": "src/index.js"
   },
   "keywords": [
     "cli",
@@ -20,5 +23,9 @@
   ],
   "author": "alphabeast97",
   "license": "GPL-3.0-only",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "openai": "^6.45.0"
+  }
 }
