@@ -2,13 +2,15 @@
   "name": "@alphabeast97/jugari",
   "version": "0.0.1",
   "description": "Broke but brilliant. A coding agent harness built for free-tier models. (in progress V0.0.1)",
-  "main": "src/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "test": "node --experimental-test-module-mocks --test tests/history.test.js tests/llm.test.js",
-    "start": "node src/index.js"
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run"
   },
   "bin": {
-    "jugari": "src/index.js"
+    "jugari": "dist/index.js"
   },
   "keywords": [
     "cli",
@@ -27,5 +29,11 @@
   "dependencies": {
     "dotenv": "^17.4.2",
     "openai": "^6.45.0"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.0",
+    "tsx": "^4.23.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }
