@@ -45,6 +45,13 @@ vi.mock("openai", () => {
     }
   }
 
+  class RateLimitError extends APIError {
+    constructor() {
+      super(429, "Too Many Requests");
+      this.name = "RateLimitError";
+    }
+  }
+
   return {
     default: class {
       constructor() {}
@@ -52,6 +59,7 @@ vi.mock("openai", () => {
     },
     APIConnectionError,
     APIError,
+    RateLimitError,
   };
 });
 
@@ -135,7 +143,20 @@ describe("llm", () => {
     const { APIError } = await import("openai");
 
     mockCreate.mockImplementationOnce(() => {
-      throw new APIError(429, "Too Many Requests");
+      throw new APIError(500, "Internal Server Error");
+    });
+
+    const his: { userMsg: string; aiResponse: string }[] = [];
+    await expect(llm({ input: "test", history: his })).resolves.toBeUndefined();
+    expect(his.length).toBe(0);
+  });
+
+  it("should handle rate limit errors gracefully", async () => {
+    const { llm } = await import("../src/llm.js");
+    const { RateLimitError } = await import("openai");
+
+    mockCreate.mockImplementationOnce(() => {
+      throw new RateLimitError();
     });
 
     const his: { userMsg: string; aiResponse: string }[] = [];

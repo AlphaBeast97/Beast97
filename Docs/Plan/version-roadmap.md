@@ -44,7 +44,7 @@ The same chat CLI, rewritten in TypeScript with a proper build pipeline.
 - Vitest replaces `node:test` — no experimental flags
 - `vi.mock` + `vi.hoisted` for LLM test mocking
 - `tsc` builds to `dist/`, `tsx` for dev
-- 7 passing tests (4 history + 3 llm)
+- 13 passing tests (4 history + 7 llm + 2 config)
 
 **Usage:**
 ```bash

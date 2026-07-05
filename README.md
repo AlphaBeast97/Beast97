@@ -22,7 +22,7 @@ Working features:
 - Ctrl+C clean exit
 - TypeScript + strict mode, Vitest, `tsc` build
 
-**12 passing tests** — history, LLM mock, config validation, error handling.
+**13 passing tests** — history, LLM mock, config validation, error handling.
 
 ## Where It's Going
 
