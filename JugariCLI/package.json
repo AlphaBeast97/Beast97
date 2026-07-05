@@ -1,8 +1,8 @@
 {
   "name": "@alphabeast97/jugari",
-  "version": "0.1.0",
+  "version": "0.0.1",
   "description": "Broke but brilliant. A coding agent harness built for free-tier models. (in progress V0.1)",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "node --experimental-test-module-mocks --test tests/history.test.js tests/llm.test.js",
     "start": "node src/index.js"
