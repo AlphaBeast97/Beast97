@@ -1,20 +1,32 @@
 #!/usr/bin/env node
 
 import "dotenv/config";
-import { openai } from "./llm.js";
-import { JUGARI_MODEL } from "./config.js";
+import { readFileSync } from "node:fs";
+import { llm } from "./llm.js";
+import { JUGARI_MODEL, PROVIDER_BASE_URL } from "./config.js";
+import rl from "readline/promises";
+import { stdin, stdout } from "node:process";
+
+const pkg = JSON.parse(
+  readFileSync(new URL("../package.json", import.meta.url), "utf-8"),
+);
+
+let his = [];
 
 const main = async () => {
-  const completion = await openai.chat.completions.create({
-    model: JUGARI_MODEL,
-    messages: [{ role: "user", content: "What is the capital of France?" }],
-    stream: true,
-    max_tokens: 4096,
-  });
+  try {
+    console.log(
+      `\n${pkg.name} v${pkg.version} — model: ${JUGARI_MODEL}, provider: ${PROVIDER_BASE_URL}`,
+    );
+    console.log("\u2500".repeat(60));
+    const usrMsg = await rl.createInterface({ input: stdin, output: stdout });
+    while (true) {
+      const userInput = await usrMsg.question("User: \n>");
 
-  for await (const chunk of completion) {
-    const content = chunk.choices[0].delta?.content || "";
-    process.stdout.write(content);
+      await llm({ input: userInput, history: his });
+    }
+  } catch (error) {
+    process.stderr.write(`Error: ${error.message}\n`);
   }
 };
 

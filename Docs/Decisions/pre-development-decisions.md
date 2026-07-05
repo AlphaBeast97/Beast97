@@ -36,28 +36,29 @@
 
 ## Decision 2: Model & API Strategy
 
-**Context:** The harness needs a model that supports tool/function calling. Budget is zero — no paid API keys. The end goal is multi-provider support, but v0.1 needs one concrete endpoint to code against.
+**Context:** The harness needs a model that supports tool/function calling. Budget is zero — no paid API keys. The system must work with any provider speaking the OpenAI-compatible chat completions format.
 
 **Alternatives Considered:**
 - **Claude API** — best agentic coding model, but expensive
 - **GPT-4 / GPT-4o** — good tool calling, also expensive
 - **Ollama / local models** — free, but unreliable tool calling and resource-heavy
 - **OpenCode Zen** — already used via OpenCode, but less general-purpose as a provider
-- **OpenRouter** — hub that proxies many models, has free tiers, single API format
+- **Vendor lock-in** — hardcoding a single provider's API format — bad for flexibility
 
-**Decision:** DeepSeek V4 Flash Free via OpenRouter, using the OpenAI-compatible chat completions schema.
+**Decision:** Provider-agnostic from day one. The harness talks to any OpenAI-compatible API. Environment variables (`PROVIDER_API_KEY`, `PROVIDER_BASE_URL`, `JUGARI_MODEL`) determine the target. Currently targeting DeepSeek V4 Flash Free via OpenRouter as the primary model.
 
 **Rationale:**
-- Free tier is genuinely usable
+- OpenAI-compatible schema means switching providers is just a base URL and API key swap
+- No rewiring needed for different providers — same `openai` SDK, different config
+- Free tier is genuinely usable on OpenRouter
 - DeepSeek supports tool/function calling
-- OpenAI-compatible schema means switching providers later is just a base URL and API key swap
-- OpenRouter's single endpoint simplifies future multi-provider support
+- OpenRouter's single endpoint simplifies future multi-provider expansion
 
 **Consequences:**
-- Must verify DeepSeek V4 Flash Free reliably emits valid `tool_calls` JSON before building the loop around it
-- Limited context window vs paid models — compaction will hit earlier
-- If free tier degrades or disappears, need a fallback plan
-- Provider abstraction layer should be designed from day one even if only one provider is wired
+- Must verify chosen model reliably emits valid `tool_calls` JSON before building the loop around it
+- Headers and provider-specific quirks (e.g., OpenRouter's `HTTP-Referer`) live in code, not config
+- If free tier degrades or disappears, swap providers via `.env` — no code changes
+- Provider abstraction layer grows naturally from the OpenAI-compatible baseline
 
 **Risks:**
 - Free tier may be rate-limited, go down, or disappear entirely
@@ -147,7 +148,7 @@
 - **Paid APIs** — better models, but not affordable
 - **Self-hosted models** — free to run, but GPU cost and reliability overhead
 
-**Decision:** The harness is built around and evaluated on DeepSeek V4 Flash Free. Free-tier reliability is a first-class design constraint, not an afterthought.
+**Decision:** The harness is built around and evaluated on free-tier models (currently DeepSeek V4 Flash Free via OpenRouter). Free-tier reliability is a first-class design constraint, not an afterthought. Because the harness speaks the OpenAI-compatible format, the provider can be swapped without code changes.
 
 **Rationale:**
 - No budget — this is the only viable option for development

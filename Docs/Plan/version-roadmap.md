@@ -14,7 +14,7 @@
 `node cli.js` starts a conversation. No tools — just a smart chat.
 
 **Capabilities:**
-- Prompt user for input, send to model via OpenRouter
+- Prompt user for input, send to model via provider API
 - Stream response tokens to the terminal
 - Maintain conversation history (in-memory array)
 - Handle basic errors (no API key, network failure)
@@ -33,7 +33,7 @@ $ node cli.js
 <response streamed to terminal>
 ```
 
-✅ **Usable as:** A CLI chat interface to DeepSeek / any LLM.
+✅ **Usable as:** A CLI chat interface to any OpenAI-compatible model.
 
 ---
 
@@ -184,22 +184,21 @@ The agent adapts its behavior per project based on configuration files.
 
 ---
 
-## V0.9 — Multi-Provider
+## V0.9 — Provider Interface Abstraction
 
-Freedom to choose any model via configuration.
+Formalize the provider layer with a clean interface, enabling model fallback and non-OpenAI providers.
 
 **Capabilities:**
 - Provider interface: `sendMessage()`, `streamMessage()`
-- OpenRouter provider (already wired, extracted to the interface)
-- Second provider wired: OpenAI or Anthropic or Ollama
-- Config file for provider selection, model name, API keys
+- Config file for provider selection, model name, API keys (moved from env vars)
 - Model fallback (if primary fails, try secondary)
+- Support for providers that deviate from the OpenAI-compatible schema (e.g., raw Anthropic or Google APIs)
 
-**Done when:** Switching from OpenRouter to a second provider (e.g., Ollama local) requires only a config change — no code changes. Both providers produce the same agent behavior given the same input.
+**Done when:** Switching from an OpenAI-compatible provider to a different protocol (e.g., Anthropic's native API) requires a config change instead of code changes. Fallback works when the primary provider fails.
 
 ✅ **No vendor lock-in** — run on free models during dev, switch to paid when needed.
 
-**Tests:** OpenRouter provider works, second provider works, switching via config works, provider failure triggers fallback, config validation rejects invalid provider names.
+**Tests:** OpenAI-compatible provider works, protocol-adapter provider works, switching via config works, provider failure triggers fallback, config validation rejects invalid provider names.
 
 ---
 
