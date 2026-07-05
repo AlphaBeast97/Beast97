@@ -1,6 +1,6 @@
 {
   "name": "@alphabeast97/jugari",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Broke but brilliant. A coding agent harness built for free-tier models. (in progress V0.1)",
   "main": "index.js",
   "scripts": {
