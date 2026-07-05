@@ -1,5 +1,5 @@
 {
-  "name": "@alphabeast97/jugari",
+  "name": "@alphabeast97/beast97",
   "version": "0.0.2-ts.1",
   "description": "Broke but brilliant. A coding agent harness built for free-tier models. (in progress V0.0.2-ts.1)",
   "main": "dist/index.js",
@@ -10,7 +10,7 @@
     "test": "vitest run"
   },
   "bin": {
-    "jugari": "dist/index.js"
+    "beast97": "dist/index.js"
   },
   "keywords": [
     "cli",

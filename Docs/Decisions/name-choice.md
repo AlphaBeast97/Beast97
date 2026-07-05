@@ -1,4 +1,4 @@
-# Project Name: "Jugari"
+# Project Name: "Beast97"
 
 > Decision record for the project name — identity, rationale, and consequences.
 
@@ -7,53 +7,50 @@
 ## Context
 
 The project needed a name that reflects:
-- **Identity** — a solo Pakistani developer building in the open
-- **Constraint** — zero budget, free-tier models only
-- **Philosophy** — scrappy, incremental, hand-built with whatever is available
-- **Product** — a coding agent harness (LLM orchestration + file/shell tools)
+- **Identity** — the creator's existing handle and personal brand
+- **Philosophy** — no pretense, unapologetic, direct
+- **Product** — a coding agent harness that does what it says
+- **Tone** — confident but not corporate, personal but not obscure
 
-The name must be short, punchy, memorable, and available on npm.
+The name must be short, discoverable, and available on npm/GitHub under the user's namespace.
 
 ## Alternatives Considered
 
-- **Harness** — direct description, but too generic, not memorable, likely taken on npm
-- **Broke** — owns the budget constraint, fun but no connection to the maker
-- **Null** — zero budget + CS term, no identity or personality
-- **Lean** — budget + efficient, clean but generic, no edge
-- **Scrap** — scrappy, spare parts, no personal or cultural anchor
-- **Jugaar** — same root as Jugari, slightly longer, less snappy
+- **Loom** — conceptually strong but already occupied by a well-known video messaging platform
+- **Jugari** — previous name; culturally meaningful but cryptic to non-Urdu speakers, no personal brand link
+- **Verve, Cynic, Rune, Pith, etc.** — cool but disconnected from the creator — they feel like a random noun generator picked them
+- **AlphaBeast** — too long, less snappy for a CLI command (`npx alphabeast` vs `npx beast97`)
 
 ## Decision
 
-**Jugari**
+**Beast97**
 
 ## Rationale
 
-**Jugari** is derived from *jugaad* (Urdu/جگاڑ) — the distinctly South Asian concept of making something work with limited resources through ingenuity and resourcefulness. It is a "jugaad fix" — a scrappy, creative solution built from whatever is at hand.
+Beast97 comes directly from the creator's GitHub identity — **AlphaBeast97**. Dropping "Alpha" keeps it tight while retaining full authenticity.
 
-This is exactly what this project is:
-- A coding agent harness built on **free-tier models** (zero budget constraint)
-- Built **by hand**, incrementally, by a solo developer
-- No VC funding, no cloud credits — just spare time and curiosity
+- **Beast** conveys capability, power, and untamed potential — exactly what a coding agent should feel like. A beast doesn't negotiate; it gets things done.
+- **97** is a personal identifier, grounding the name in a real person rather than a faceless brand. It makes the project feel hand-built, not factory-stamped.
+- The name wears the creator's handle proudly. It signals: *this is mine, I made this, I stand behind it.* No hiding behind a thesaurus noun.
+- It's self-deprecating in the right way — calling your tool "Beast" is bold, but the specific tacked-on number keeps it from being pretentious.
 
-The name also carries personal identity proudly. It marks the project as coming from a **Pakistani solo dev**, which is both authentic and differentiating in a landscape dominated by well-funded US/European tools.
+**Why "Beast97" over staying with "Jugari":**
 
-**Why "Jugari" over "Jugaar":**
-- "Jugari" reads like "Jug" + "Ari" — the suffix naturally suggests an agent or someone who performs an action (like *kammari* = blacksmith)
-- It flows more naturally in English contexts
-- It sounds like a tool name — pairs well with verbs ("jugari that file")
+- Instantly readable and pronounceable for any English speaker — no phonetic guide required
+- Directly tied to the creator's online identity — people who know the GitHub handle already recognize it
+- Shorter CLI command: `beast97` vs `jugari` (same syllable count but globally familiar phonetics)
+- Zero cultural barrier — no explanation needed
 
 ## Consequences
 
-- Instantly memorable and unique — zero chance of name collision
-- Tells a story before anyone reads a line of code
-- Emotional hook — people root for the underdog
-- Strong searchability — no existing project called Jugari
-- Non-Urdu speakers won't immediately understand the meaning — mitigated by a one-line tagline in the README
-- Some may find it hard to pronounce at first — mitigated by phonetic guidance ("joo-guh-ree")
+- The name does not describe what the tool does — mitigated by a tagline ("coding agent harness") in the README
+- "Beast" is a generic English word; searchability is weaker than a made-up name — mitigated by the numeric suffix "97" which makes it unique
+- Existing GitHub user beast97 exists (unrelated) — this is the repo `alphabeast97/beast97`, not the org, so no collision
+- Monster Energy has aggressively trademarked "Beast" — but they sell beverages, not coding tools; zero legal overlap
 
 ## Tagline Options
 
-- "Jugari — broke but brilliant."
-- "Jugari — the coding agent harness that makes it work with nothing."
-- "Jugari — build by hand, run for free."
+- "Beast97 — unleash it on your codebase."
+- "Beast97 — broke but brilliant. Now with teeth."
+- "Beast97 — your coding agent, unapologetic."
+- "Beast97 — harness the beast."

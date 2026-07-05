@@ -29,11 +29,29 @@ const { mockCreate, mockHistory } = vi.hoisted(() => {
 });
 
 vi.mock("openai", () => {
+  class APIConnectionError extends Error {
+    constructor() {
+      super("Connection failed");
+      this.name = "APIConnectionError";
+    }
+  }
+
+  class APIError extends Error {
+    status: number;
+    constructor(status: number, msg: string) {
+      super(msg);
+      this.name = "APIError";
+      this.status = status;
+    }
+  }
+
   return {
     default: class {
       constructor() {}
       chat = { completions: { create: mockCreate } };
     },
+    APIConnectionError,
+    APIError,
   };
 });
 
@@ -97,5 +115,50 @@ describe("llm", () => {
     expect(userInput).toBe("accumulate test");
     expect(aiResponse).toBe("Hello World");
     expect(hisArg).toBe(his);
+  });
+
+  it("should handle network errors gracefully", async () => {
+    const { llm } = await import("../src/llm.js");
+    const { APIConnectionError } = await import("openai");
+
+    mockCreate.mockImplementationOnce(() => {
+      throw new APIConnectionError();
+    });
+
+    const his: { userMsg: string; aiResponse: string }[] = [];
+    await expect(llm({ input: "test", history: his })).resolves.toBeUndefined();
+    expect(his.length).toBe(0);
+  });
+
+  it("should handle API errors gracefully", async () => {
+    const { llm } = await import("../src/llm.js");
+    const { APIError } = await import("openai");
+
+    mockCreate.mockImplementationOnce(() => {
+      throw new APIError(429, "Too Many Requests");
+    });
+
+    const his: { userMsg: string; aiResponse: string }[] = [];
+    await expect(llm({ input: "test", history: his })).resolves.toBeUndefined();
+    expect(his.length).toBe(0);
+  });
+
+  it("should warn and skip history on empty model response", async () => {
+    const { llm } = await import("../src/llm.js");
+    mockHistory.mockClear();
+
+    mockCreate.mockImplementationOnce(() => {
+      async function* emptyStream() {
+        yield { choices: [{ index: 0, delta: {} }] };
+        yield { choices: [{ index: 0, delta: { content: "" } }] };
+      }
+      return emptyStream();
+    });
+
+    const his: { userMsg: string; aiResponse: string }[] = [];
+    await llm({ input: "empty test", history: his });
+
+    expect(his.length).toBe(0);
+    expect(mockHistory).not.toHaveBeenCalled();
   });
 });

@@ -15,21 +15,30 @@ const pkg: { name: string; version: string } = JSON.parse(
 const his: HistoryEntry[] = [];
 
 const main = async (): Promise<void> => {
-  try {
-    console.log(
-      `\n${pkg.name} v${pkg.version} — model: ${JUGARI_MODEL}, provider: ${PROVIDER_BASE_URL}`,
-    );
-    console.log("\u2500".repeat(60));
-    const usrMsg = rl.createInterface({ input: stdin, output: stdout });
-    while (true) {
-      const userInput = await usrMsg.question("User: \n>");
+  const usrMsg = rl.createInterface({ input: stdin, output: stdout });
 
+  usrMsg.on("SIGINT", () => {
+    usrMsg.close();
+    console.log("\nGoodbye.");
+    process.exit(0);
+  });
+
+  console.log(
+    `\n${pkg.name} v${pkg.version} — model: ${JUGARI_MODEL}, provider: ${PROVIDER_BASE_URL}`,
+  );
+  console.log("\u2500".repeat(60));
+
+  while (true) {
+    try {
+      const userInput = await usrMsg.question("User: \n>");
       await llm({ input: userInput, history: his });
+    } catch (error) {
+      console.log(
+        `Error: ${error instanceof Error ? error.message : String(error)}\n`,
+      );
+    } finally {
+      usrMsg.close();
     }
-  } catch (error) {
-    process.stderr.write(
-      `Error: ${error instanceof Error ? error.message : String(error)}\n`,
-    );
   }
 };
 

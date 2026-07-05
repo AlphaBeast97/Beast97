@@ -1,8 +1,8 @@
-# Building Jugari: A Coding Agent Harness
+# Building Beast97: A Coding Agent Harness
 
 > Resource: [What is an Agent Harness? and How to build a great one!](https://www.youtube.com/watch?v=nWzXyjXCoCE)
 >
-> Project name: [Jugari — why?](../Decisions/name-choice.md)
+> Project name: [Beast97 — why?](../Decisions/name-choice.md)
 
 ## Contents
 

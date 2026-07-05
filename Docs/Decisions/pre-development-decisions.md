@@ -1,12 +1,12 @@
 # Pre-Development Decisions
 
-> Architecture Decision Records for [Jugari](name-choice.md) — a coding agent harness.
+> Architecture Decision Records for [Beast97](name-choice.md) — a coding agent harness.
 > Each entry documents the context, alternatives considered, chosen decision, rationale, and consequences.
 > See also: [Name Choice](name-choice.md) — project naming decision.
 
 ---
 
-## Decision 1: Tech Stack — JavaScript / Node.js
+## Decision 1: Tech Stack — TypeScript / Node.js
 
 **Context:** A coding harness is orchestration and I/O — HTTP calls to an LLM API, managing conversation state, parsing tool-call JSON, executing file/shell operations, rendering a terminal UI. No ML training, tensor math, or inference work is involved.
 
@@ -14,23 +14,28 @@
 - **Python** (used by Aider) — strong LLM ecosystem (LangChain, etc.), but the project doesn't need any of that
 - **Go** — fast, single-binary output, but unfamiliar and overkill for this scope
 - **Rust** — even more overkill
+- **Plain JavaScript** — simpler, fewer tooling deps, but no type safety
+- **TypeScript** — adds compile step, strict typing, better DX as codebase grows
 
-**Decision:** JavaScript / Node.js
+**Decision:** TypeScript / Node.js with `strict: true`. Compiled via `tsc`, developed via `tsx` (direct TS execution, no build needed in dev).
 
 **Rationale:**
 - Existing familiarity (Express, Next.js, React) — no new language to learn alongside a new domain
 - Non-blocking I/O ideal for streaming LLM responses
 - `npm` ecosystem makes global CLI distribution trivial (`npm install -g` / `npx`)
-- Mature terminal-UI packages (Ink, blessed, commander)
+- TypeScript catches interface mismatches at compile time — critical as the tool loop grows complex
+- Self-documenting interfaces (`HistoryEntry`, `LlmPayload`) make the code readable months later
+- `tsx` makes the dev loop fast — no compile step until you ship
 
 **Consequences:**
-- Can't use Python-native LLM tooling, but OpenAI-compatible SDKs exist in JS
-- Harness-specific patterns (event emitters, streams, child processes) map well to existing JS knowledge
+- Build step required for production (`tsc` → `dist/`)
+- Dev deps include `typescript`, `@types/node`, `tsx`
+- Import paths use `.js` extensions (Node16 ESM convention) even in `.ts` files
 
 **Risks:**
-- JS ecosystem churn — dependencies may break or become unmaintained
+- JS/TS ecosystem churn — dependencies may break or become unmaintained
 - `child_process` security surface is large — must be carefully sandboxed
-- Beginner may conflate "it runs" with "it's correct" — testing discipline is critical
+- Adding TypeScript mid-project (as happened here) requires converting all files at once
 
 ---
 
@@ -105,23 +110,26 @@
 - **Time-based** — fixed release cadence — arbitrary, features may be half-baked
 - **Feature-based milestones** — each version ships when a specific capability is complete, with room for refactoring between
 
-**Decision:** Each version must be a shippable, usable CLI. Scope per version is deliberately small — the tool loop alone takes a full version, and read-only tools are separate from write tools. Ten versions from V0.1 to V1.0.
+**Decision:** Each version must be a shippable, usable CLI. Scope per version is deliberately small — the tool loop alone takes a full version, and read-only tools are separate from write tools.
 
 > Full roadmap with version capabilities, limitations, and usage examples:
 > [Plan/version-roadmap.md](../Plan/version-roadmap.md)
 
 | Version | What it ships |
 |---------|--------------|
-| **V0.1** | Basic chat CLI — talk to the model, no tools |
-| **V0.2** | Agent loop with mock tools — prove the mechanism |
-| **V0.3** | File reader — read, grep, list directories |
-| **V0.4** | File editor — write, edit, delete with confirmations |
-| **V0.5** | Shell runner — run commands with permission gating |
-| **V0.6** | Persistent sessions — JSONL save/resume |
-| **V0.7** | Context compaction — summarize, stay under budget |
-| **V0.8** | Project-aware prompting — AGENTS.md injection |
-| **V0.9** | Multi-provider — swap models via config |
-| **V1.0** | Safety, hooks, polish — production release |
+| **V0.0.1** | JS prototype — basic chat CLI (proved the plumbing) |
+| **V0.0.2** | TypeScript rewrite — strict types, Vitest, tsc build |
+| **V0.1** | Agent loop with mock tools — prove the mechanism |
+| **V0.2** | File reader — read, grep, list directories |
+| **V0.3** | File editor — write, edit, delete with confirmations |
+| **V0.4** | Shell runner — run commands with permission gating |
+| **V0.5** | Persistent sessions — JSONL save/resume |
+| **V0.6** | Context compaction — summarize, stay under budget |
+| **V0.7** | Project-aware prompting — AGENTS.md injection |
+| **V0.8** | Provider interface abstraction — formal provider layer |
+| **V0.9** | Safety, hooks, polish — production release |
+
+Notable: the JS prototype was shipped as v0.0.1, then the TypeScript migration landed as v0.0.2. This does not reset the roadmap; v0.0.x are internal milestones that build toward V0.1 (agent loop with mock tools).
 
 **Rationale:**
 - Each version is a genuine checkpoint — demonstrable, testable, dogfoodable

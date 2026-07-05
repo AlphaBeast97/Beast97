@@ -1,43 +1,66 @@
-# Jugari — Version Roadmap
+# Beast97 — Version Roadmap
 
 > Each version is a **shippable, usable CLI** you could stop at and genuinely use.
 > Scope per version is kept small enough to be achievable by a solo beginner.
 >
-> Project name: [Jugari — why?](../Decisions/name-choice.md)
+> Project name: [Beast97 — why?](../Decisions/name-choice.md)
 
 ---
 
-## V0.1 — Basic Chat CLI
+## V0.0.1 — JS Prototype (shipped)
 
 > Full spec: [v0.1-basic-chat-cli.md](v0.1-basic-chat-cli.md)
 
-`node cli.js` starts a conversation. No tools — just a smart chat.
+A JavaScript proof-of-concept to prove the plumbing works.
 
 **Capabilities:**
-- Prompt user for input, send to model via provider API
+- Read user input via `readline/promises`
+- Send messages to an OpenAI-compatible provider
 - Stream response tokens to the terminal
 - Maintain conversation history (in-memory array)
-- Handle basic errors (no API key, network failure)
 
 **Limitations:**
-- No tool calling — the model can only talk, not act
-
-**Done when:** A user can start the CLI, type a message, see the model's streamed response, and continue the conversation for multiple turns. History is preserved in memory across turns.
-
-**Tests:** API connection, streaming output, conversation history accumulation, error handling for missing API key and network failures.
+- JavaScript (no type safety)
+- `node:test` with experimental `mock.module` flag
+- No build step
 
 **Usage:**
 ```
-$ node cli.js
-> What is the main function of this codebase?
-<response streamed to terminal>
+$ node src/index.js
 ```
+
+---
+
+## V0.0.2 — TypeScript Migration (current)
+
+> Full spec: [v0.1-basic-chat-cli.md](v0.1-basic-chat-cli.md)
+
+The same chat CLI, rewritten in TypeScript with a proper build pipeline.
+
+**What changed:**
+- All `.js` → `.ts` with `strict: true`
+- OpenAI client created once at module level
+- `requireEnv()` helper in config
+- Vitest replaces `node:test` — no experimental flags
+- `vi.mock` + `vi.hoisted` for LLM test mocking
+- `tsc` builds to `dist/`, `tsx` for dev
+- 7 passing tests (4 history + 3 llm)
+
+**Usage:**
+```bash
+npm run dev    # tsx src/index.ts
+npm run build  # tsc
+npm start      # node dist/index.js
+npm test       # vitest run
+```
+
+**Done when:** A user can start the CLI, type a message, see the model's streamed response, and continue the conversation for multiple turns. History is preserved in memory across turns.
 
 ✅ **Usable as:** A CLI chat interface to any OpenAI-compatible model.
 
 ---
 
-## V0.2 — Agent with Mock Tools
+## V0.1 — Agent with Mock Tools
 
 The tool-use loop works end-to-end — but tools are fake (e.g., `get_weather`, `calculate`). This proves the mechanism is solid before wiring real filesystem access.
 
@@ -60,7 +83,7 @@ The tool-use loop works end-to-end — but tools are fake (e.g., `get_weather`, 
 
 ---
 
-## V0.3 — File Reader
+## V0.2 — File Reader
 
 The agent can explore your codebase — reads files, searches content, lists directories.
 
@@ -83,7 +106,7 @@ The agent can explore your codebase — reads files, searches content, lists dir
 
 ---
 
-## V0.4 — File Editor
+## V0.3 — File Editor
 
 The agent can create and modify files — with safety confirmations.
 
@@ -95,7 +118,7 @@ The agent can create and modify files — with safety confirmations.
 **Capabilities:**
 - Confirmation prompt before writes, edits, and deletes
 - Diff preview before applying edits
-- All V0.3 tools still available
+- All V0.2 tools still available
 
 **Done when:** The agent can create a new file, edit an existing one, and rename/delete with user approval. Diffs are shown before edits apply. Rejecting a confirmation cancels the operation.
 
@@ -105,7 +128,7 @@ The agent can create and modify files — with safety confirmations.
 
 ---
 
-## V0.5 — Shell Runner
+## V0.4 — Shell Runner
 
 The agent can execute shell commands — with permission gating.
 
@@ -127,12 +150,12 @@ The agent can execute shell commands — with permission gating.
 
 ---
 
-## V0.6 — Persistent Sessions
+## V0.5 — Persistent Sessions
 
 Conversations survive crashes. You can stop work and resume later.
 
 **Capabilities:**
-- Every message, tool call, tool result, and compaction event written to a JSONL file
+- Every message, tool call, tool result, and compaction event written to JSONL file
 - Session directory in `.harness/sessions/`
 - Resume a session from disk — replay the conversation up to the last turn
 - List saved sessions, delete old ones
@@ -146,7 +169,7 @@ Conversations survive crashes. You can stop work and resume later.
 
 ---
 
-## V0.7 — Context Compaction
+## V0.6 — Context Compaction
 
 Long conversations don't break the budget. The agent doesn't silently forget.
 
@@ -165,7 +188,7 @@ Long conversations don't break the budget. The agent doesn't silently forget.
 
 ---
 
-## V0.8 — Project-Aware Prompting
+## V0.7 — Project-Aware Prompting
 
 The agent adapts its behavior per project based on configuration files.
 
@@ -184,7 +207,7 @@ The agent adapts its behavior per project based on configuration files.
 
 ---
 
-## V0.9 — Provider Interface Abstraction
+## V0.8 — Provider Interface Abstraction
 
 Formalize the provider layer with a clean interface, enabling model fallback and non-OpenAI providers.
 
@@ -202,7 +225,7 @@ Formalize the provider layer with a clean interface, enabling model fallback and
 
 ---
 
-## V1.0 — Safety, Hooks, Polish
+## V0.9 — Safety, Hooks, Polish
 
 Production-ready release.
 
