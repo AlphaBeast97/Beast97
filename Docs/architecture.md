@@ -45,6 +45,27 @@ interface Provider {
 
 ---
 
+## Provider Factory 🚧
+
+A single entry point for creating providers, eliminating manual instantiation and enabling multi-provider support via config changes instead of code changes.
+
+```ts
+// src/provider/factory.ts
+function createProvider(config: Config): Provider
+```
+
+**Dispatch logic (planned):**
+- `PROVIDER_TYPE` env var → explicit selection (e.g. `"openai"`, `"anthropic"`)
+- Env var scanning → `ANTHROPIC_API_KEY` detected → AnthropicProvider, etc.
+- `PROVIDER_BASE_URL` pattern matching → Groq, OpenRouter, local endpoint → all reuse OpenAIProvider with custom base URL
+- Fallback priority chain when multiple credentials are present
+
+**Current use:** `llm.ts` calls `createProvider(config)` instead of manually importing `OpenAIProvider` and calling `new OpenAIProvider({...})`.
+
+**Future:** Any OpenAI-compatible service (Groq, OpenRouter, local, xAI) reuses `OpenAIProvider` with a different `baseURL`. Native providers (Anthropic, Google Gemini) each get their own implementation class.
+
+---
+
 ## Message Types ✅
 
 ```ts
@@ -93,7 +114,7 @@ Everything should have its own folder. The `src/` directory is organized by doma
 src/
 ├── config/         ✅  config loading, env vars, types
 ├── memory/         🚧  conversation history, persistence (currently flat history.ts)
-├── provider/       ✅  LLM provider abstraction + OpenAI implementation
+├── provider/       ✅  Provider interface, OpenAI implementation, factory
 ├── tools/          🚧  tool definitions and registry (types exist, implementations pending)
 ├── ui/             🚧  input/output interface (readline still in index.ts)
 ├── agent/          🚧  the core loop (chat-only in llm.ts, no tool loop)
