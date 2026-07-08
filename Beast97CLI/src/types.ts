@@ -1,5 +1,11 @@
 import z from "zod";
 
+// Type definitions for the provider interface
+export interface Provider {
+  readonly model: string;
+  chat(messages: Message[]): AsyncIterable<string>;
+}
+
 // Type definitions for the result of a tool execution
 export interface ToolCall {
   id: string;
@@ -13,12 +19,6 @@ export interface ToolResult {
   isError?: boolean;
 }
 
-// Type definitions for messages exchanged with the LLM
-export type Message =
-  | { role: "user"; content: string }
-  | { role: "assistant"; content: string; toolCalls?: ToolCall[] }
-  | { role: "tool"; toolCallId: string; content: string; isError?: boolean };
-
 //   Type definitions for the result of a tool execution
 export interface Tool {
   name: string;
@@ -28,6 +28,14 @@ export interface Tool {
   execute: (args: unknown) => Promise<ToolResult>;
 }
 
+// Type definitions for messages exchanged with the LLM
+export type Message =
+  | { role: "system"; content: string }
+  | { role: "user"; content: string }
+  | { role: "assistant"; content: string; toolCalls?: ToolCall[] }
+  | { role: "tool"; tool_call_id: string; content: string; isError?: boolean };
+
+// Type definitions for the configuration of the application
 export interface Config {
   PROVIDER_API_KEY: string;
   PROVIDER_BASE_URL: string;
